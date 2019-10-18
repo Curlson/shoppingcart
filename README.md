@@ -9,11 +9,6 @@
 
 ## Quick Start
 
-#### Installation
-
-```bash
-composer require "mkakpabla/shoppingcart"
-```
 
 #### Usage
 

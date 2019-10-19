@@ -17,21 +17,14 @@ class Cart implements CartInterface
 
     /**
      * Permet de retourner les items du panier
-     * @param string|null $cartInstance
-     * @return CartItems|array
+     * @return CartItems
      */
-    public function getItems(?string $cartInstance = null)
+    public function getItems(): CartItems
     {
-        if (!is_null($cartInstance)) {
-            if (isset($_SESSION['cart'][$cartInstance])) {
-                return new CartItems($_SESSION['cart'][$cartInstance]);
-            }
-        } else {
-            if (isset($_SESSION['cart'][$this->instance])) {
-                return new CartItems($_SESSION['cart'][$this->instance]);
-            }
+        if (isset($_SESSION['cart'][$this->instance])) {
+            return new CartItems($_SESSION['cart'][$this->instance]);
         }
-        return [];
+        return new CartItems([]);
     }
 
     /**
@@ -45,10 +38,7 @@ class Cart implements CartInterface
     {
         if ($this->create()) {
             if (isset($_SESSION['cart'][$this->instance][$itemId])) {
-                $itemWithQuantity = $_SESSION['cart'][$this->instance][$itemId];
-                $qty = $itemWithQuantity->getQuantity() + $qty;
-                $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity($item, $qty);
-                return true;
+                $this->updateItem($itemId, $qty);
             }
             $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity($item, $qty);
             return true;
@@ -58,7 +48,18 @@ class Cart implements CartInterface
 
     public function updateItem(int $itemId, int $qty = 1): bool
     {
-        // TODO: Implement updateItem() method.
+        if ($this->create()) {
+            if (isset($_SESSION['cart'][$this->instance][$itemId])) {
+                $itemWithQuantity = $_SESSION['cart'][$this->instance][$itemId];
+                $qty = $itemWithQuantity->getQuantity() + $qty;
+                $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity(
+                    $itemWithQuantity->getItem(),
+                    $qty
+                );
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -82,8 +83,8 @@ class Cart implements CartInterface
      */
     public function flush()
     {
-        if (isset($_SESSION['cart'])) {
-            unset($_SESSION['cart']);
+        if (isset($_SESSION['cart'][$this->instance])) {
+            unset($_SESSION['cart'][$this->instance]);
             return true;
         }
         return false;

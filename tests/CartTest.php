@@ -52,6 +52,4 @@ class CartTest extends TestCase
         $this->assertEquals(5, $this->cart->getItems()[2]['qty']);
         $this->assertEquals(2, $this->cart->getItems()[1]['qty']);
     }
-
-
 }

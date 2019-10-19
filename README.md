@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mkakpabla/form-validation-php.svg?branch=master)](https://travis-ci.org/mkakpabla/form-validation-php)
+[![Build Status](https://travis-ci.org/mkakpabla/shoppingcart.svg?branch=master)](https://travis-ci.org/mkakpabla/shoppingcart)
 # Shopping Cart
 
 
@@ -9,11 +9,6 @@
 
 ## Quick Start
 
-#### Installation
-
-```bash
-composer require "mkakpabla/shoppingcart"
-```
 
 #### Usage
 

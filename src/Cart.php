@@ -11,6 +11,7 @@ class Cart implements CartInterface
 
     public function __construct(string $instance = 'default')
     {
+        $this->ensureStarted();
         $this->instance = $instance;
     }
 
@@ -36,28 +37,26 @@ class Cart implements CartInterface
      */
     public function addItem(int $itemId, array $item, int $qty = 1): bool
     {
-        if ($this->create()) {
-            if (isset($_SESSION['cart'][$this->instance][$itemId])) {
-                $this->updateItem($itemId, $qty);
-            }
-            $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity($item, $qty);
+        $this->cartIsCreate();
+        if (isset($_SESSION['cart'][$this->instance][$itemId])) {
+            $this->updateItem($itemId, $qty);
             return true;
         }
-        return false;
+        $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity($item, $qty);
+        return true;
     }
 
     public function updateItem(int $itemId, int $qty = 1): bool
     {
-        if ($this->create()) {
-            if (isset($_SESSION['cart'][$this->instance][$itemId])) {
-                $itemWithQuantity = $_SESSION['cart'][$this->instance][$itemId];
-                $qty = $itemWithQuantity->getQuantity() + $qty;
-                $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity(
-                    $itemWithQuantity->getItem(),
-                    $qty
-                );
-                return true;
-            }
+        $this->cartIsCreate();
+        if (isset($_SESSION['cart'][$this->instance][$itemId])) {
+            $itemWithQuantity = $_SESSION['cart'][$this->instance][$itemId];
+            $qty = $itemWithQuantity->getQuantity() + $qty;
+            $_SESSION['cart'][$this->instance][$itemId] = new ItemWithQuantity(
+                $itemWithQuantity->getItem(),
+                $qty
+            );
+            return true;
         }
         return false;
     }
@@ -69,6 +68,7 @@ class Cart implements CartInterface
      */
     public function removeItem(int $itemId): bool
     {
+        $this->cartIsCreate();
         if (isset($_SESSION['cart'][$this->instance][$itemId])) {
             unset($_SESSION['cart'][$this->instance][$itemId]);
             return true;
@@ -83,6 +83,7 @@ class Cart implements CartInterface
      */
     public function flush()
     {
+        $this->cartIsCreate();
         if (isset($_SESSION['cart'][$this->instance])) {
             unset($_SESSION['cart'][$this->instance]);
             return true;
@@ -94,11 +95,18 @@ class Cart implements CartInterface
      * Permet de créer un painer
      * @return bool
      */
-    private function create()
+    private function cartIsCreate()
     {
         if (!isset($_SESSION['cart'][$this->instance])) {
             $_SESSION['cart'][$this->instance] = [];
         }
         return true;
+    }
+
+    private function ensureStarted()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 }

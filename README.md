@@ -9,10 +9,32 @@
 
 ## Quick Start
 
+#### Installation
+```bash
+composer require "mkakpabla/shoppingcart"
+```
 
 #### Usage
 
+```php
+<?php
 
+require 'vendor/autoload.php';
+
+$cart = new Cart();
+
+$cart->addItem(1, [
+    'name' => 'item1',
+    'price' => 'item2'
+], 2);
+
+// Return the list of the CartItems
+$items = $cart->getItems();
+
+// Return the price of the cart
+$cartPrice = $items->totalPrice()
+
+```
 
 
 

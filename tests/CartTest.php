@@ -17,6 +17,11 @@ class CartTest extends TestCase
         $this->cart = new Cart();
     }
 
+    protected function tearDown(): void
+    {
+        $this->cart->flush();
+    }
+
     public function testAddItem()
     {
         $this->assertTrue($this->cart->addItem(
@@ -27,7 +32,6 @@ class CartTest extends TestCase
             ],
             1
         ));
-        $this->cart->flush();
     }
 
     public function testCartItemsTotalPrice()
@@ -35,7 +39,6 @@ class CartTest extends TestCase
         $this->cart->addItem(1, ['name' => 'product1', 'price' => 2000], 1);
         $this->cart->addItem(2, ['name' => 'product1', 'price' => 2000], 2);
         $this->assertEquals(6000, $this->cart->getItems()->totalPrice());
-        $this->cart->flush();
     }
 
     public function testCartRemoveItem()

@@ -8,6 +8,6 @@ install:
   - composer install
 
 script:
-  - ./vendor/bin/phpunit --colors
+  - ./vendor/bin/phpunit --colors --stderr
   - ./vendor/bin/phpcs
   - ./vendor/bin/phpcbf
